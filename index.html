@@ -3,20 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 번호 생성기</title>
+    <title>Premium Lotto Generator</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>로또 번호 생성기</h1>
-        <div class="lotto-rows-container">
-            <!-- 5줄의 로또 번호가 여기에 생성됩니다 -->
+    <div class="glass-container">
+        <header>
+            <h1>PREMIUM LOTTO</h1>
+            <p class="subtitle">빅데이터 기반 당첨 확률 분석 시스템</p>
+        </header>
+
+        <div id="result-area" class="result-area hidden">
+            <div class="lotto-rows-container">
+                <!-- 결과가 여기에 동적으로 생성됩니다 -->
+            </div>
         </div>
+
+        <div class="welcome-message" id="welcome-message">
+            <div class="icon-pulse">🎰</div>
+            <p>버튼을 눌러 분석된 번호를 확인하세요</p>
+        </div>
+
         <div class="button-group">
-            <button class="generate-btn">새 번호 생성</button>
-            <a href="https://www.dhlottery.co.kr/main" target="_blank" class="buy-btn">구매하러가기</a>
+            <button id="generate-btn" class="main-btn">번호 분석 및 생성</button>
+            <a href="https://www.dhlottery.co.kr/main" target="_blank" class="sub-btn">구매하러 가기</a>
         </div>
+        
+        <footer>
+            <p>© 2026 AI Analysis System. All rights reserved.</p>
+        </footer>
     </div>
     <script src="main.js"></script>
 </body>
 </html>
+ 
