@@ -5,7 +5,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm63 59c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zM34 90c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7z" fill="%2334495e" fill-opacity="0.2"/%3E%3C/svg%3E');
 }
@@ -16,45 +16,81 @@ body {
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 6px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
 }
 
 h1 {
     margin-bottom: 30px;
 }
 
-.lotto-numbers {
+.lotto-rows-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 15px;
     margin-bottom: 30px;
 }
 
+.lotto-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50px;
+}
+
 .lotto-number {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
-    margin: 0 10px;
     color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    box-shadow: inset -3px -3px 5px rgba(0,0,0,0.3);
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.generate-btn, .buy-btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
 }
 
 .generate-btn {
     background-color: #e74c3c;
     color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    box-shadow: 0 5px #c0392b;
+    box-shadow: 0 4px #c0392b;
 }
 
 .generate-btn:hover {
     background-color: #c0392b;
+    transform: translateY(2px);
     box-shadow: 0 2px #c0392b;
-    transform: translateY(3px);
+}
+
+.buy-btn {
+    background-color: #f39c12;
+    color: white;
+    box-shadow: 0 4px #d35400;
+}
+
+.buy-btn:hover {
+    background-color: #d35400;
+    transform: translateY(2px);
+    box-shadow: 0 2px #d35400;
 }
