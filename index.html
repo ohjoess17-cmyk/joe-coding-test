@@ -12,23 +12,80 @@
         <header>
             <h1>PREMIUM LOTTO</h1>
             <p class="subtitle">빅데이터 기반 당첨 확률 분석 시스템</p>
+            <div class="latest-draw">
+                <span class="draw-label">최근 1210회 당첨번호:</span>
+                <div class="mini-balls">
+                    <span class="mini-ball" style="background:#f39c12">7</span>
+                    <span class="mini-ball" style="background:#f39c12">8</span>
+                    <span class="mini-ball" style="background:#2980b9">13</span>
+                    <span class="mini-ball" style="background:#e74c3c">22</span>
+                    <span class="mini-ball" style="background:#e74c3c,">24</span>
+                    <span class="mini-ball" style="background:#95a5a6">37</span>
+                    <span class="bonus-plus">+</span>
+                    <span class="mini-ball" style="background:#2ecc71">41</span>
+                </div>
+            </div>
         </header>
 
-        <div id="result-area" class="result-area hidden">
-            <div class="lotto-rows-container">
-                <!-- 결과가 여기에 동적으로 생성됩니다 -->
+        <div class="user-section">
+            <div class="input-group">
+                <input type="text" id="user-id" placeholder="사용자 ID 입력 (예: luck77)" maxlength="15">
+                <button id="login-btn">접속</button>
             </div>
+            <p id="user-status" class="user-status">로그인이 필요합니다</p>
         </div>
 
-        <div class="welcome-message" id="welcome-message">
-            <div class="icon-pulse">🎰</div>
-            <p>버튼을 눌러 분석된 번호를 확인하세요</p>
-        </div>
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="generator">번호 생성</button>
+            <button class="tab-btn" data-tab="history">나의 기록</button>
+            <button class="tab-btn" data-tab="stats">이번 주 통계</button>
+        </nav>
 
-        <div class="button-group">
-            <button id="generate-btn" class="main-btn">번호 분석 및 생성</button>
-            <a href="https://www.dhlottery.co.kr/main" target="_blank" class="sub-btn">구매하러 가기</a>
-        </div>
+        <main id="tab-content">
+            <!-- 번호 생성 섹션 -->
+            <section id="generator-tab" class="tab-pane active">
+                <div id="result-area" class="result-area hidden">
+                    <div class="lotto-rows-container">
+                        <!-- 결과가 여기에 동적으로 생성됩니다 -->
+                    </div>
+                </div>
+
+                <div class="welcome-message" id="welcome-message">
+                    <div class="icon-pulse">🎰</div>
+                    <p>ID 입력 후 번호를 생성해보세요</p>
+                </div>
+
+                <div class="button-group">
+                    <button id="generate-btn" class="main-btn" disabled>번호 분석 및 생성</button>
+                    <a href="https://www.dhlottery.co.kr/main" target="_blank" class="sub-btn">구매하러 가기</a>
+                </div>
+            </section>
+
+            <!-- 나의 기록 섹션 -->
+            <section id="history-tab" class="tab-pane">
+                <div class="history-list" id="history-list">
+                    <p class="empty-msg">기록이 없습니다. 번호를 먼저 생성해주세요.</p>
+                </div>
+            </section>
+
+            <!-- 통계 섹션 -->
+            <section id="stats-tab" class="tab-pane">
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h3>가장 많이 생성된 번호 (TOP 5)</h3>
+                        <div id="top-numbers" class="chart-container"></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>번호 합계 분포</h3>
+                        <div id="sum-distribution" class="chart-container"></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>홀짝 비율 통계</h3>
+                        <div id="odd-even-stats" class="chart-container"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
         
         <footer>
             <p>© 2026 AI Analysis System. All rights reserved.</p>
