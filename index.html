@@ -37,8 +37,9 @@
 
         <nav class="tab-nav">
             <button class="tab-btn active" data-tab="generator">번호 생성</button>
-            <button class="tab-btn" data-tab="history">나의 기록</button>
-            <button class="tab-btn" data-tab="stats">이번 주 통계</button>
+            <button class="tab-btn" data-tab="mypage">마이페이지</button>
+            <button class="tab-btn" data-tab="stats">분석/통계</button>
+            <button class="tab-btn" data-tab="guide">이용 가이드</button>
         </nav>
 
         <main id="tab-content">
@@ -53,6 +54,7 @@
                 <div class="welcome-message" id="welcome-message">
                     <div class="icon-pulse">🎰</div>
                     <p>ID 입력 후 번호를 생성해보세요</p>
+                    <p class="sub-welcome">최신 알고리즘이 당신의 행운을 분석합니다</p>
                 </div>
 
                 <div class="button-group">
@@ -61,10 +63,20 @@
                 </div>
             </section>
 
-            <!-- 나의 기록 섹션 -->
-            <section id="history-tab" class="tab-pane">
+            <!-- 마이페이지 섹션 (기존 나의 기록 통합) -->
+            <section id="mypage-tab" class="tab-pane">
+                <div class="mypage-header">
+                    <div class="user-profile">
+                        <div class="profile-icon">👤</div>
+                        <div class="profile-info">
+                            <h2 id="profile-id">로그인이 필요합니다</h2>
+                            <p id="profile-stat">저장된 조합: 0개</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-title">저장한 번호 내역</div>
                 <div class="history-list" id="history-list">
-                    <p class="empty-msg">기록이 없습니다. 번호를 먼저 생성해주세요.</p>
+                    <p class="empty-msg">저장된 기록이 없습니다. 번호 생성 후 '저장' 버튼을 눌러주세요.</p>
                 </div>
             </section>
 
@@ -72,8 +84,12 @@
             <section id="stats-tab" class="tab-pane">
                 <div class="stats-container">
                     <div class="stat-card">
-                        <h3>가장 많이 생성된 번호 (TOP 5)</h3>
+                        <h3>최다 빈도 번호 (TOP 5)</h3>
                         <div id="top-numbers" class="chart-container"></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>최저 빈도 번호 (BOTTOM 5)</h3>
+                        <div id="bottom-numbers" class="chart-container"></div>
                     </div>
                     <div class="stat-card">
                         <h3>번호 합계 분포</h3>
@@ -82,6 +98,30 @@
                     <div class="stat-card">
                         <h3>홀짝 비율 통계</h3>
                         <div id="odd-even-stats" class="chart-container"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 가이드 섹션 -->
+            <section id="guide-tab" class="tab-pane">
+                <div class="guide-container">
+                    <div class="guide-card">
+                        <h3>💡 이용 방법</h3>
+                        <ol>
+                            <li>상단에 <strong>사용자 ID</strong>를 입력하고 접속합니다.</li>
+                            <li><strong>번호 분석 및 생성</strong> 버튼을 눌러 5가지 추천 조합을 받습니다.</li>
+                            <li>마음에 드는 조합 옆의 <strong>저장</strong> 버튼을 눌러 기록에 남깁니다.</li>
+                            <li><strong>마이페이지</strong>에서 내가 저장한 번호들을 확인할 수 있습니다.</li>
+                        </ol>
+                    </div>
+                    <div class="guide-card">
+                        <h3>🔬 분석 알고리즘 안내</h3>
+                        <p>본 시스템은 역대 당첨 번호의 출현 빈도, 홀짝 비율, 번호 합계 범위를 기반으로 한 <strong>Monte Carlo Simulation</strong> 가중치 분석을 적용합니다.</p>
+                        <ul>
+                            <li><strong>빈도 가중치:</strong> 자주 나오는 번호에 가중 점수 부여</li>
+                            <li><strong>합계 밸런스:</strong> 100~170 사이의 안정적인 합계 유도</li>
+                            <li><strong>패턴 분석:</strong> 연속 번호 및 특정 구간 쏠림 방지</li>
+                        </ul>
                     </div>
                 </div>
             </section>
