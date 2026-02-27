@@ -19,157 +19,127 @@
                     <span class="mini-ball" style="background:#f39c12">8</span>
                     <span class="mini-ball" style="background:#2980b9">13</span>
                     <span class="mini-ball" style="background:#e74c3c">22</span>
-                    <span class="mini-ball" style="background:#e74c3c,">24</span>
-                    <span class="mini-ball" style="background:#95a5a6">37</span>
-                    <span class="bonus-plus">+</span>
-                    <span class="mini-ball" style="background:#2ecc71">41</span>
+                    <span class="mini-ball" style="background:#95a5a6">24</span>
+                    <span class="mini-ball" style="background:#27ae60">37</span>
                 </div>
             </div>
         </header>
 
-        <div class="user-section">
-            <div class="input-group">
-                <input type="text" id="user-id" placeholder="사용자 ID 입력 (예: luck77)" maxlength="15">
+        <main>
+            <div class="user-section">
+                <input type="text" id="user-id" placeholder="Enter your ID">
                 <button id="login-btn">접속</button>
             </div>
-            <p id="user-status" class="user-status">로그인이 필요합니다</p>
-        </div>
+            <div id="user-status" class="user-status-message">로그인이 필요합니다.</div>
 
-        <nav class="tab-nav">
-            <button class="tab-btn active" data-tab="generator">번호 생성</button>
-            <button class="tab-btn" data-tab="game">당첨 게임</button>
-            <button class="tab-btn" data-tab="mypage">마이페이지</button>
-            <button class="tab-btn" data-tab="stats">분석/통계</button>
-            <button class="tab-btn" data-tab="guide">이용 가이드</button>
-        </nav>
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="lotto">번호 생성기</button>
+                <button class="tab-btn" data-tab="game">당첨 게임</button>
+                <button class="tab-btn" data-tab="mypage">나의 기록</button>
+                <button class="tab-btn" data-tab="stats">글로벌 통계</button>
+            </nav>
 
-        <main id="tab-content">
-            <!-- 번호 생성 섹션 -->
-            <section id="generator-tab" class="tab-pane active">
-                <div id="result-area" class="result-area hidden">
-                    <div class="lotto-rows-container">
-                        <!-- 결과가 여기에 동적으로 생성됩니다 -->
+            <div class="tab-content">
+                <!-- 번호 생성기 섹션 -->
+                <section id="lotto-tab" class="tab-pane active">
+                    <div id="welcome-message" class="welcome-container">
+                        <h2>프리미엄 번호 생성 시스템</h2>
+                        <p>AI와 빅데이터를 기반으로<br>최적의 번호 조합을 생성합니다.</p>
+                        <p class="small-text">먼저 ID를 입력하고 접속해주세요.</p>
                     </div>
-                </div>
-
-                <div class="welcome-message" id="welcome-message">
-                    <div class="icon-pulse">🎰</div>
-                    <p>ID 입력 후 번호를 생성해보세요</p>
-                    <p class="sub-welcome">최신 알고리즘이 당신의 행운을 분석합니다</p>
-                </div>
-
-                <div class="button-group">
-                    <button id="generate-btn" class="main-btn" disabled>번호 분석 및 생성</button>
-                    <a href="https://www.dhlottery.co.kr/main" target="_blank" class="sub-btn">구매하러 가기</a>
-                </div>
-            </section>
-
-            <!-- 당첨 게임 섹션 -->
-            <section id="game-tab" class="tab-pane">
-                <div class="game-container">
-                    <div class="target-numbers-box">
-                        <div class="section-title">목표 당첨 번호 (최근 1210회)</div>
-                        <div id="target-balls" class="mini-balls">
-                            <!-- JS로 채워짐 -->
+                    <div id="result-area" class="hidden">
+                        <div class="lotto-rows-container">
+                            <!-- JS will generate lotto rows here -->
                         </div>
                     </div>
+                    <button id="generate-btn" class="cta-button" disabled>
+                        <span>💎</span> PREMIUM 생성
+                    </button>
+                </section>
 
-                    <div class="simulation-area">
-                        <div class="counter-display">
-                            <span class="counter-label">현재 누적 클릭(추첨) 수</span>
-                            <div id="draw-count" class="counter-number">0</div>
-                        </div>
-                        
-                        <div class="draw-display" id="current-draw-balls">
-                            <!-- 현재 추첨된 공이 표시됨 -->
-                            <div class="empty-balls-placeholder">클릭하여 추첨을 시작하세요</div>
+                <!-- 당첨 게임 섹션 -->
+                <section id="game-tab" class="tab-pane">
+                    <div class="game-container">
+                        <div class="target-numbers-box">
+                            <div class="section-title">목표 당첨 번호 (최근 1210회)</div>
+                            <div id="target-balls" class="mini-balls">
+                                <!-- JS로 채워짐 -->
+                            </div>
                         </div>
 
-                        <div id="game-status" class="game-status-msg">1등 당첨번호가 나올 때까지 클릭하세요!</div>
-                        
-                        <div class="game-controls">
-                            <button id="draw-once-btn" class="main-btn" disabled>번호 추첨하기 (Click!)</button>
-                            <button id="reset-game-btn" class="sub-btn">기록 초기화</button>
+                        <div class="simulation-area">
+                            <div class="counter-display">
+                                <span class="counter-label">현재 누적 클릭(추첨) 수</span>
+                                <div id="draw-count" class="counter-number">0</div>
+                            </div>
+                            
+                            <div class="draw-display" id="current-draw-balls">
+                                <!-- 현재 추첨된 공이 표시됨 -->
+                                <div class="empty-balls-placeholder">클릭하여 추첨을 시작하세요</div>
+                            </div>
+                            <div id="game-status" class="game-status-message">1등 당첨번호가 나올 때까지 클릭하세요!</div>
+
+                            <div class="game-controls">
+                                <button id="draw-once-btn" class="cta-button game-btn">번호 추첨하기 (Click!)</button>
+                                <button id="reset-game-btn" class="secondary-btn">진행 초기화</button>
+                            </div>
+                        </div>
+
+                        <div class="leaderboard-box">
+                             <div class="section-title">🏆 명예의 전당 🏆</div>
+                             <div id="leaderboard-list">
+                                 <!-- JS로 채워짐 -->
+                             </div>
                         </div>
                     </div>
+                </section>
 
-                    <div class="leaderboard-section">
-                        <div class="section-title">🏆 실시간 랭킹 (당첨자 우선 / 적은 클릭순)</div>
-                        <div id="leaderboard-list" class="leaderboard-list">
-                            <p class="empty-msg">아직 기록이 없습니다.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 마이페이지 섹션 (기존 나의 기록 통합) -->
-            <section id="mypage-tab" class="tab-pane">
-                <div class="mypage-header">
-                    <div class="user-profile">
-                        <div class="profile-icon">👤</div>
+                <!-- 나의 기록 섹션 -->
+                <section id="mypage-tab" class="tab-pane">
+                    <div class="mypage-header">
                         <div class="profile-info">
-                            <h2 id="profile-id">로그인이 필요합니다</h2>
+                            <h2 id="profile-id">User ID</h2>
                             <p id="profile-stat">저장된 조합: 0개</p>
                         </div>
                     </div>
-                </div>
-                <div class="section-title">저장한 번호 내역</div>
-                <div class="history-list" id="history-list">
-                    <p class="empty-msg">저장된 기록이 없습니다. 번호 생성 후 '저장' 버튼을 눌러주세요.</p>
-                </div>
-            </section>
-
-            <!-- 통계 섹션 -->
-            <section id="stats-tab" class="tab-pane">
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <h3>최다 빈도 번호 (TOP 5)</h3>
-                        <div id="top-numbers" class="chart-container"></div>
+                    <div id="history-list">
+                        <!-- JS로 채워짐 -->
                     </div>
-                    <div class="stat-card">
-                        <h3>최저 빈도 번호 (BOTTOM 5)</h3>
-                        <div id="bottom-numbers" class="chart-container"></div>
+                </section>
+                
+                <!-- 통계 섹션 -->
+                <section id="stats-tab" class="tab-pane">
+                    <h2>글로벌 통계 센터</h2>
+                    <p>모든 사용자가 생성한 번호를 기반으로 한 통계입니다.</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>가장 많이 나온 수 (Top 5)</h3>
+                            <div id="top-numbers"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>가장 적게 나온 수 (Top 5)</h3>
+                            <div id="bottom-numbers"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>번호 합계 분포</h3>
+                            <div id="sum-distribution"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>홀/짝 비율</h3>
+                            <div id="odd-even-stats"></div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h3>번호 합계 분포</h3>
-                        <div id="sum-distribution" class="chart-container"></div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>홀짝 비율 통계</h3>
-                        <div id="odd-even-stats" class="chart-container"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 가이드 섹션 -->
-            <section id="guide-tab" class="tab-pane">
-                <div class="guide-container">
-                    <div class="guide-card">
-                        <h3>💡 이용 방법</h3>
-                        <ol>
-                            <li>상단에 <strong>사용자 ID</strong>를 입력하고 접속합니다.</li>
-                            <li><strong>번호 분석 및 생성</strong> 버튼을 눌러 5가지 추천 조합을 받습니다.</li>
-                            <li>마음에 드는 조합 옆의 <strong>저장</strong> 버튼을 눌러 기록에 남깁니다.</li>
-                            <li><strong>마이페이지</strong>에서 내가 저장한 번호들을 확인할 수 있습니다.</li>
-                        </ol>
-                    </div>
-                    <div class="guide-card">
-                        <h3>🔬 분석 알고리즘 안내</h3>
-                        <p>본 시스템은 역대 당첨 번호의 출현 빈도, 홀짝 비율, 번호 합계 범위를 기반으로 한 <strong>Monte Carlo Simulation</strong> 가중치 분석을 적용합니다.</p>
-                        <ul>
-                            <li><strong>빈도 가중치:</strong> 자주 나오는 번호에 가중 점수 부여</li>
-                            <li><strong>합계 밸런스:</strong> 100~170 사이의 안정적인 합계 유도</li>
-                            <li><strong>패턴 분석:</strong> 연속 번호 및 특정 구간 쏠림 방지</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+                </section>
+            </div>
         </main>
         
         <footer>
             <p>© 2026 AI Analysis System. All rights reserved.</p>
         </footer>
     </div>
+
+    <!-- 드라마틱한 연출을 위한 오버레이 -->
+    <div id="dramatic-overlay" class="dramatic-overlay hidden"></div>
 
     <!-- 당첨 팝업 -->
     <div id="win-popup" class="win-popup hidden">

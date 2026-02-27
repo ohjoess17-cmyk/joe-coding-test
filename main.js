@@ -22,11 +22,12 @@ const drawOnceBtn = document.getElementById('draw-once-btn');
 const resetGameBtn = document.getElementById('reset-game-btn');
 const leaderboardList = document.getElementById('leaderboard-list');
 
-// Win Popup Elements
+// Win Popup & Effect Elements
 const winPopup = document.getElementById('win-popup');
 const winPopupClose = document.querySelector('.win-popup-close');
 const winPopupCloseBtn = document.getElementById('win-popup-close-btn');
 const fireworksContainer = document.querySelector('.fireworks');
+const dramaticOverlay = document.getElementById('dramatic-overlay');
 
 
 let currentUser = null;
@@ -113,21 +114,26 @@ tabBtns.forEach(btn => {
 // --- Game Logic ---
 
 function showWinPopup() {
+    dramaticOverlay.classList.add('hidden'); // 오버레이는 숨김
     winPopup.classList.remove('hidden');
+    winPopup.classList.add('visible'); // 폭발 애니메이션 트리거
+    
     fireworksContainer.innerHTML = '';
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 50; i++) { // 폭죽 개수 증가
         const firework = document.createElement('div');
         firework.classList.add('firework');
         firework.style.top = `${Math.random() * 100}%`;
         firework.style.left = `${Math.random() * 100}%`;
-        firework.style.animationDelay = `${Math.random() * 2}s`;
+        firework.style.animationDelay = `${Math.random() * 2.5}s`;
         fireworksContainer.appendChild(firework);
     }
 }
 
 function hideWinPopup() {
+    winPopup.classList.remove('visible');
     winPopup.classList.add('hidden');
     fireworksContainer.innerHTML = '';
+    document.body.classList.remove('pre-win-effect');
 }
 
 function loadUserGameProgress() {
@@ -174,18 +180,29 @@ function performManualDraw() {
     currentDrawBallsContainer.innerHTML = sortedSet.map(n => 
         `<div class="lotto-ball ball-sm" style="background:${getBallColor(n)}">${n}</div>`
     ).join('');
+    currentDrawBallsContainer.style.border = "2px solid #f1c40f";
+    currentDrawBallsContainer.style.boxShadow = "0 0 20px #f1c40f";
 
     // 무조건 당첨!
     if (true) {
         hasWon = true;
         drawOnceBtn.disabled = true;
         drawOnceBtn.textContent = "당첨 완료!";
-        gameStatusMsg.textContent = `🎉 축하합니다! ${currentDrawCount.toLocaleString()}번 만에 1등 당첨!`;
-        gameStatusMsg.style.color = "#2ecc71";
+        gameStatusMsg.textContent = `... 두근 ... 두근 ...`;
+        gameStatusMsg.style.color = "#e67e22";
         saveGameProgress('won');
-        showWinPopup(); // Show popup on win
+
+        // --- 드라마틱한 연출 시작 ---
+        document.body.classList.add('pre-win-effect');
+        dramaticOverlay.classList.remove('hidden');
+        
+        setTimeout(() => {
+            gameStatusMsg.textContent = `🎉 축하합니다! ${currentDrawCount.toLocaleString()}번 만에 1등 당첨!`;
+            gameStatusMsg.style.color = "#2ecc71";
+            showWinPopup();
+        }, 1500); // 1.5초 후 팝업 표시
+
     } else {
-        // 이 부분은 이제 실행되지 않습니다.
         saveGameProgress('ongoing');
     }
 }
@@ -233,6 +250,8 @@ function resetUserGame() {
     currentDrawCount = 0;
     hasWon = false;
     currentDrawBallsContainer.innerHTML = '<div class="empty-balls-placeholder">클릭하여 추첨을 시작하세요</div>';
+    currentDrawBallsContainer.style.border = "none";
+    currentDrawBallsContainer.style.boxShadow = "none";
     loadUserGameProgress();
     updateLeaderboardUI();
 }
