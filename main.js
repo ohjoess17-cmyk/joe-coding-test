@@ -69,17 +69,15 @@ function handleLogin() {
     }
     currentUser = id;
     userStatus.textContent = `반갑습니다, ${id}님!`;
-    userStatus.style.color = "#2ecc71";
+    userStatus.style.color = "#007aff";
     generateBtn.disabled = false;
     
-    // Load Game Progress
     loadUserGameProgress();
     
     userIdInput.disabled = true;
     loginBtn.textContent = "로그아웃";
     loginBtn.onclick = handleLogout;
     
-    // Update My Page Info
     profileId.textContent = `${id} 님`;
     
     updateHistoryUI();
@@ -114,12 +112,12 @@ tabBtns.forEach(btn => {
 // --- Game Logic ---
 
 function showWinPopup() {
-    dramaticOverlay.classList.add('hidden'); // 오버레이는 숨김
+    dramaticOverlay.classList.add('hidden');
     winPopup.classList.remove('hidden');
-    winPopup.classList.add('visible'); // 폭발 애니메이션 트리거
+    winPopup.classList.add('visible');
     
     fireworksContainer.innerHTML = '';
-    for (let i = 0; i < 50; i++) { // 폭죽 개수 증가
+    for (let i = 0; i < 50; i++) {
         const firework = document.createElement('div');
         firework.classList.add('firework');
         firework.style.top = `${Math.random() * 100}%`;
@@ -154,12 +152,12 @@ function loadUserGameProgress() {
         drawOnceBtn.disabled = true;
         drawOnceBtn.textContent = "당첨 완료!";
         gameStatusMsg.textContent = "축하합니다! 이미 1등에 당첨되었습니다.";
-        gameStatusMsg.style.color = "#2ecc71";
+        gameStatusMsg.style.color = "#34c759";
     } else {
         drawOnceBtn.disabled = false;
         drawOnceBtn.textContent = "번호 추첨하기 (Click!)";
         gameStatusMsg.textContent = "1등 당첨번호가 나올 때까지 클릭하세요!";
-        gameStatusMsg.style.color = "var(--text-dim)";
+        gameStatusMsg.style.color = "var(--text-color-secondary)";
     }
 }
 
@@ -173,34 +171,42 @@ function performManualDraw() {
     currentDrawCount++;
     drawCountDisplay.textContent = currentDrawCount.toLocaleString();
 
-    // 항상 당첨되도록 수정된 부분
-    const sortedSet = targetNumbers;
+    const currentSet = new Set();
+    while (currentSet.size < 6) {
+        currentSet.add(Math.floor(Math.random() * 45) + 1);
+    }
+    const sortedSet = Array.from(currentSet).sort((a, b) => a - b);
 
-    // Display drawn balls
     currentDrawBallsContainer.innerHTML = sortedSet.map(n => 
         `<div class="lotto-ball ball-sm" style="background:${getBallColor(n)}">${n}</div>`
     ).join('');
-    currentDrawBallsContainer.style.border = "2px solid #f1c40f";
-    currentDrawBallsContainer.style.boxShadow = "0 0 20px #f1c40f";
+    currentDrawBallsContainer.style.border = "none";
+    currentDrawBallsContainer.style.boxShadow = "none";
 
-    // 무조건 당첨!
-    if (true) {
+    const targetSet = new Set(targetNumbers);
+    let matchCount = 0;
+    sortedSet.forEach(num => {
+        if (targetSet.has(num)) matchCount++;
+    });
+
+    if (matchCount === 6) {
         hasWon = true;
         drawOnceBtn.disabled = true;
-        drawOnceBtn.textContent = "당첨 완료!";
-        gameStatusMsg.textContent = `... 두근 ... 두근 ...`;
-        gameStatusMsg.style.color = "#e67e22";
         saveGameProgress('won');
+        
+        currentDrawBallsContainer.style.border = "2px solid #34c759";
+        currentDrawBallsContainer.style.boxShadow = "0 0 20px #34c759";
+        gameStatusMsg.textContent = `... 두근 ... 두근 ...`;
+        gameStatusMsg.style.color = "#ff9500";
 
-        // --- 드라마틱한 연출 시작 ---
         document.body.classList.add('pre-win-effect');
         dramaticOverlay.classList.remove('hidden');
         
         setTimeout(() => {
             gameStatusMsg.textContent = `🎉 축하합니다! ${currentDrawCount.toLocaleString()}번 만에 1등 당첨!`;
-            gameStatusMsg.style.color = "#2ecc71";
+            gameStatusMsg.style.color = "#34c759";
             showWinPopup();
-        }, 1500); // 1.5초 후 팝업 표시
+        }, 1500);
 
     } else {
         saveGameProgress('ongoing');
@@ -392,7 +398,7 @@ function updateStatsUI() {
         bottomNumsContainer.innerHTML = bottom5.map(([num, count]) => `
             <div class="bar-wrapper">
                 <span class="bar-label">${num}번</span>
-                <div class="bar-track"><div class="bar-fill" style="width: ${(count/bottomMax)*100}%; background: #95a5a6"></div></div>
+                <div class="bar-track"><div class="bar-fill" style="width: ${(count/bottomMax)*100}%; background: #5856d6"></div></div>
                 <span class="bar-value">${count}</span>
             </div>
         `).join('');
@@ -411,7 +417,7 @@ function updateStatsUI() {
         sumContainer.innerHTML = Object.entries(ranges).map(([label, count]) => `
             <div class="bar-wrapper">
                 <span class="bar-label" style="width:60px">${label}</span>
-                <div class="bar-track"><div class="bar-fill" style="width: ${(count/maxRange)*100}%; background: #3498db"></div></div>
+                <div class="bar-track"><div class="bar-fill" style="width: ${(count/maxRange)*100}%; background: #007aff"></div></div>
                 <span class="bar-value">${count}</span>
             </div>
         `).join('');
@@ -427,12 +433,12 @@ function updateStatsUI() {
         oeContainer.innerHTML = `
             <div class="bar-wrapper">
                 <span class="bar-label">홀수</span>
-                <div class="bar-track"><div class="bar-fill" style="width: ${oddP}%; background: #e74c3c"></div></div>
+                <div class="bar-track"><div class="bar-fill" style="width: ${oddP}%; background: #ff3b30"></div></div>
                 <span class="bar-value">${oddP}%</span>
             </div>
             <div class="bar-wrapper">
                 <span class="bar-label">짝수</span>
-                <div class="bar-track"><div class="bar-fill" style="width: ${evenP}%; background: #3498db"></div></div>
+                <div class="bar-track"><div class="bar-fill" style="width: ${evenP}%; background: #007aff"></div></div>
                 <span class="bar-value">${evenP}%</span>
             </div>
         `;
@@ -476,11 +482,11 @@ function calculateProbability(numbers) {
 }
 
 function getBallColor(number) {
-    if (number <= 10) return 'linear-gradient(135deg, #f1c40f, #f39c12)';
-    if (number <= 20) return 'linear-gradient(135deg, #3498db, #2980b9)';
-    if (number <= 30) return 'linear-gradient(135deg, #e74c3c, #c0392b)';
-    if (number <= 40) return 'linear-gradient(135deg, #bdc3c7, #95a5a6)';
-    return 'linear-gradient(135deg, #2ecc71, #27ae60)';
+    if (number <= 10) return '#ff9500'; // Orange
+    if (number <= 20) return '#007aff'; // Blue
+    if (number <= 30) return '#ff3b30'; // Red
+    if (number <= 40) return '#8e8e93'; // Grey
+    return '#34c759'; // Green
 }
 
 generateBtn.addEventListener('click', () => {
