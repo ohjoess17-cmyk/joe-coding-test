@@ -15,17 +15,17 @@ const profileStat = document.getElementById('profile-stat');
 
 // Game Elements
 const targetBallsContainer = document.getElementById('target-balls');
+const currentDrawBallsContainer = document.getElementById('current-draw-balls');
 const drawCountDisplay = document.getElementById('draw-count');
 const gameStatusMsg = document.getElementById('game-status');
-const startGameBtn = document.getElementById('start-game-btn');
-const stopGameBtn = document.getElementById('stop-game-btn');
+const drawOnceBtn = document.getElementById('draw-once-btn');
+const resetGameBtn = document.getElementById('reset-game-btn');
 const leaderboardList = document.getElementById('leaderboard-list');
 
 let currentUser = null;
 let isFirstGeneration = true;
-let isGaming = false;
-let gameInterval = null;
 let currentDrawCount = 0;
+let hasWon = false;
 
 const targetNumbers = [7, 8, 13, 22, 24, 37]; // 1210회 당첨번호
 const frequentNumbers = [43, 34, 12, 27, 17, 13, 19, 6, 33, 15, 7, 30, 3];
@@ -63,7 +63,10 @@ function handleLogin() {
     userStatus.textContent = `반갑습니다, ${id}님!`;
     userStatus.style.color = "#2ecc71";
     generateBtn.disabled = false;
-    startGameBtn.disabled = false;
+    
+    // Load Game Progress
+    loadUserGameProgress();
+    
     userIdInput.disabled = true;
     loginBtn.textContent = "로그아웃";
     loginBtn.onclick = handleLogout;
@@ -78,7 +81,7 @@ function handleLogin() {
 
 function handleLogout() {
     if (confirm("로그아웃 하시겠습니까?")) {
-        location.reload(); // Refresh as requested
+        location.reload(); 
     }
 }
 
@@ -102,128 +105,145 @@ tabBtns.forEach(btn => {
 
 // --- Game Logic ---
 
-function startSimulation() {
+function loadUserGameProgress() {
+    const leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard_v2') || '[]');
+    const userRecord = leaderboard.find(item => item.id === currentUser);
+    
+    if (userRecord) {
+        currentDrawCount = userRecord.count;
+        hasWon = userRecord.status === 'won';
+    } else {
+        currentDrawCount = 0;
+        hasWon = false;
+    }
+    
+    drawCountDisplay.textContent = currentDrawCount.toLocaleString();
+    
+    if (hasWon) {
+        drawOnceBtn.disabled = true;
+        drawOnceBtn.textContent = "당첨 완료!";
+        gameStatusMsg.textContent = "축하합니다! 이미 1등에 당첨되었습니다.";
+        gameStatusMsg.style.color = "#2ecc71";
+    } else {
+        drawOnceBtn.disabled = false;
+        drawOnceBtn.textContent = "번호 추첨하기 (Click!)";
+        gameStatusMsg.textContent = "1등 당첨번호가 나올 때까지 클릭하세요!";
+        gameStatusMsg.style.color = "var(--text-dim)";
+    }
+}
+
+function performManualDraw() {
     if (!currentUser) {
         alert("로그인 후 이용 가능합니다.");
         return;
     }
+    if (hasWon) return;
 
-    isGaming = true;
-    currentDrawCount = 0;
-    drawCountDisplay.textContent = '0';
-    gameStatusMsg.textContent = "시뮬레이션 진행 중... (초고속 모드)";
-    gameStatusMsg.style.color = "#a29bfe";
-    
-    startGameBtn.classList.add('hidden');
-    stopGameBtn.classList.remove('hidden');
+    currentDrawCount++;
+    drawCountDisplay.textContent = currentDrawCount.toLocaleString();
 
+    // Generate random set
+    const currentSet = new Set();
+    while (currentSet.size < 6) {
+        currentSet.add(Math.floor(Math.random() * 45) + 1);
+    }
+    const sortedSet = Array.from(currentSet).sort((a, b) => a - b);
+
+    // Display drawn balls
+    currentDrawBallsContainer.innerHTML = sortedSet.map(n => 
+        `<div class="lotto-ball ball-sm" style="background:${getBallColor(n)}">${n}</div>`
+    ).join('');
+
+    // Check for win
     const targetSet = new Set(targetNumbers);
-    
-    function runBatch() {
-        if (!isGaming) return;
+    let matchCount = 0;
+    sortedSet.forEach(num => {
+        if (targetSet.has(num)) matchCount++;
+    });
 
-        const batchSize = 50000; // 처리 속도를 위해 배치 크게 설정
-        for (let i = 0; i < batchSize; i++) {
-            currentDrawCount++;
-            
-            const currentSet = new Set();
-            while (currentSet.size < 6) {
-                currentSet.add(Math.floor(Math.random() * 45) + 1);
-            }
-
-            // Check for 1st prize
-            let matchCount = 0;
-            currentSet.forEach(num => {
-                if (targetSet.has(num)) matchCount++;
-            });
-
-            if (matchCount === 6) {
-                endSimulation(true);
-                return;
-            }
-        }
-
-        drawCountDisplay.textContent = currentDrawCount.toLocaleString();
-        gameInterval = requestAnimationFrame(runBatch);
-    }
-
-    runBatch();
-}
-
-function stopSimulation() {
-    isGaming = false;
-    cancelAnimationFrame(gameInterval);
-    gameStatusMsg.textContent = "시뮬레이션이 중단되었습니다.";
-    gameStatusMsg.style.color = "var(--text-dim)";
-    startGameBtn.classList.remove('hidden');
-    stopGameBtn.classList.add('hidden');
-}
-
-function endSimulation(isWin) {
-    isGaming = false;
-    cancelAnimationFrame(gameInterval);
-    
-    if (isWin) {
-        drawCountDisplay.textContent = currentDrawCount.toLocaleString();
-        gameStatusMsg.textContent = `축하합니다! 1등 당첨! 총 ${currentDrawCount.toLocaleString()}번 만에 성공하셨습니다.`;
+    if (matchCount === 6) {
+        hasWon = true;
+        drawOnceBtn.disabled = true;
+        drawOnceBtn.textContent = "당첨 완료!";
+        gameStatusMsg.textContent = `🎉 축하합니다! ${currentDrawCount.toLocaleString()}번 만에 1등 당첨!`;
         gameStatusMsg.style.color = "#2ecc71";
-        saveGameResult(currentDrawCount);
+        saveGameProgress('won');
+    } else {
+        saveGameProgress('ongoing');
     }
-    
-    startGameBtn.classList.remove('hidden');
-    stopGameBtn.classList.add('hidden');
-    startGameBtn.textContent = "다시 도전하기";
 }
 
-function saveGameResult(count) {
-    const leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard') || '[]');
-    
-    // Find if user already has a record
+function saveGameProgress(status) {
+    let leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard_v2') || '[]');
     const existingIndex = leaderboard.findIndex(item => item.id === currentUser);
-    
+
+    const record = {
+        id: currentUser,
+        count: currentDrawCount,
+        status: status,
+        date: new Date().toLocaleDateString()
+    };
+
     if (existingIndex !== -1) {
-        // Update if new record is better (lower count)
-        if (count < leaderboard[existingIndex].count) {
-            leaderboard[existingIndex].count = count;
-            leaderboard[existingIndex].date = new Date().toLocaleDateString();
+        // If they already won, don't downgrade to ongoing
+        if (leaderboard[existingIndex].status === 'won' && status === 'ongoing') {
+            // Do nothing
+        } else {
+            leaderboard[existingIndex] = record;
         }
     } else {
-        leaderboard.push({
-            id: currentUser,
-            count: count,
-            date: new Date().toLocaleDateString()
-        });
+        leaderboard.push(record);
     }
 
-    // Sort by count ascending
-    leaderboard.sort((a, b) => a.count - b.count);
+    // Sorting logic: Winners first (by count asc), then ongoing
+    leaderboard.sort((a, b) => {
+        if (a.status === 'won' && b.status !== 'won') return -1;
+        if (a.status !== 'won' && b.status === 'won') return 1;
+        if (a.status === 'won' && b.status === 'won') return a.count - b.count;
+        return b.count - a.count; // Ongoing: higher count might be seen as more effort/progress
+    });
+
+    localStorage.setItem('lotto_leaderboard_v2', JSON.stringify(leaderboard));
+    updateLeaderboardUI();
+}
+
+function resetUserGame() {
+    if (!currentUser) return;
+    if (!confirm("당첨 기록과 진행 상황을 모두 초기화하시겠습니까?")) return;
+
+    let leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard_v2') || '[]');
+    leaderboard = leaderboard.filter(item => item.id !== currentUser);
+    localStorage.setItem('lotto_leaderboard_v2', JSON.stringify(leaderboard));
     
-    // Keep top 10
-    const top10 = leaderboard.slice(0, 10);
-    localStorage.setItem('lotto_leaderboard', JSON.stringify(top10));
-    
+    currentDrawCount = 0;
+    hasWon = false;
+    currentDrawBallsContainer.innerHTML = '<div class="empty-balls-placeholder">클릭하여 추첨을 시작하세요</div>';
+    loadUserGameProgress();
     updateLeaderboardUI();
 }
 
 function updateLeaderboardUI() {
-    const leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard') || '[]');
+    const leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard_v2') || '[]');
     
     if (leaderboard.length === 0) {
-        leaderboardList.innerHTML = '<p class="empty-msg">아직 기록이 없습니다. 첫 번째 1등 당첨자가 되어보세요!</p>';
+        leaderboardList.innerHTML = '<p class="empty-msg">아직 기록이 없습니다. 첫 번째 도전자가 되어보세요!</p>';
         return;
     }
 
     leaderboardList.innerHTML = leaderboard.map((item, index) => `
-        <div class="leader-item ${item.id === currentUser ? 'my-rank' : ''}">
+        <div class="leader-item ${item.id === currentUser ? 'my-rank' : ''} ${item.status === 'won' ? 'is-winner' : ''}">
             <span class="leader-rank">${index + 1}</span>
             <span class="leader-id">${item.id}</span>
+            <span class="leader-status-tag ${item.status === 'won' ? 'tag-won' : 'tag-ongoing'}">
+                ${item.status === 'won' ? '당첨' : '도전중'}
+            </span>
             <span class="leader-count">${item.count.toLocaleString()}회</span>
         </div>
     `).join('');
 }
 
-startGameBtn.addEventListener('click', startSimulation);
-stopGameBtn.addEventListener('click', stopSimulation);
+drawOnceBtn.addEventListener('click', performManualDraw);
+resetGameBtn.addEventListener('click', resetUserGame);
 
 // --- Core Logic ---
 
@@ -236,7 +256,6 @@ function saveSetToHistory(set) {
     const allData = JSON.parse(localStorage.getItem('lotto_app_data') || '{}');
     if (!allData[currentUser]) allData[currentUser] = [];
     
-    // Check if already saved
     const isDuplicate = allData[currentUser].some(item => 
         JSON.stringify(item.set) === JSON.stringify(set)
     );
@@ -255,10 +274,7 @@ function saveSetToHistory(set) {
     if (allData[currentUser].length > 100) allData[currentUser].pop();
     
     localStorage.setItem('lotto_app_data', JSON.stringify(allData));
-    
-    // Update global stats
     updateGlobalStats([set]);
-    
     alert("나의 기록에 저장되었습니다!");
     updateHistoryUI();
 }
@@ -277,18 +293,15 @@ function deleteFromHistory(index) {
 
 function updateGlobalStats(sets) {
     const stats = JSON.parse(localStorage.getItem('lotto_global_stats') || '{"numbers": {}, "sums": [], "oddEven": {"odd": 0, "even": 0}}');
-    
     sets.forEach(nums => {
         const sum = nums.reduce((a, b) => a + b, 0);
         stats.sums.push(sum);
-        
         nums.forEach(n => {
             stats.numbers[n] = (stats.numbers[n] || 0) + 1;
             if (n % 2 === 0) stats.oddEven.even++;
             else stats.oddEven.odd++;
         });
     });
-    
     localStorage.setItem('lotto_global_stats', JSON.stringify(stats));
 }
 
@@ -296,7 +309,6 @@ function updateHistoryUI() {
     if (!currentUser) return;
     const allData = JSON.parse(localStorage.getItem('lotto_app_data') || '{}');
     const userHistory = allData[currentUser] || [];
-    
     profileStat.textContent = `저장된 조합: ${userHistory.length}개`;
 
     if (userHistory.length === 0) {
@@ -319,13 +331,8 @@ function updateHistoryUI() {
 
 function updateStatsUI() {
     const stats = JSON.parse(localStorage.getItem('lotto_global_stats') || '{"numbers": {}, "sums": [], "oddEven": {"odd": 0, "even": 0}}');
-    
-    // Fill missing numbers in stats
-    for(let i=1; i<=45; i++) {
-        if(!stats.numbers[i]) stats.numbers[i] = 0;
-    }
+    for(let i=1; i<=45; i++) { if(!stats.numbers[i]) stats.numbers[i] = 0; }
 
-    // Top Numbers
     const topNumsContainer = document.getElementById('top-numbers');
     const sortedNumsDesc = Object.entries(stats.numbers).sort((a, b) => b[1] - a[1]);
     const top5 = sortedNumsDesc.slice(0, 5);
@@ -339,7 +346,6 @@ function updateStatsUI() {
         </div>
     `).join('') : '<p class="empty-msg">데이터 수집 중...</p>';
 
-    // Bottom Numbers
     const bottomNumsContainer = document.getElementById('bottom-numbers');
     const bottom5 = sortedNumsDesc.filter(x => x[1] > 0).reverse().slice(0, 5);
     if (bottom5.length === 0) {
@@ -350,12 +356,11 @@ function updateStatsUI() {
             <div class="bar-wrapper">
                 <span class="bar-label">${num}번</span>
                 <div class="bar-track"><div class="bar-fill" style="width: ${(count/bottomMax)*100}%; background: #95a5a6"></div></div>
-                <span class="bar-value">${count}회</span>
+                <span class="bar-value">${count}</span>
             </div>
         `).join('');
     }
 
-    // Sum Distribution
     const sumContainer = document.getElementById('sum-distribution');
     if (stats.sums.length > 0) {
         const ranges = {"100미만": 0, "100-139": 0, "140-170": 0, "170초과": 0};
@@ -377,7 +382,6 @@ function updateStatsUI() {
         sumContainer.innerHTML = '<p class="empty-msg">데이터 수집 중...</p>';
     }
 
-    // Odd Even
     const oeContainer = document.getElementById('odd-even-stats');
     const total = stats.oddEven.odd + stats.oddEven.even;
     if (total > 0) {
@@ -407,7 +411,6 @@ function generateMathBasis(numbers) {
     const evens = numbers.filter(n => n % 2 === 0).length;
     const odds = 6 - evens;
     const freqCount = numbers.filter(n => frequentNumbers.includes(n)).length;
-    
     const meanDeviation = Math.abs(138 - sum).toFixed(1);
     const weightScore = (freqCount * 12.5).toFixed(1);
     const entropy = (Math.random() * 0.2 + 0.7).toFixed(3);
@@ -425,15 +428,12 @@ function calculateProbability(numbers) {
     let score = 0;
     const sum = numbers.reduce((a, b) => a + b, 0);
     const evens = numbers.filter(n => n % 2 === 0).length;
-    
     numbers.forEach(num => {
         if (frequentNumbers.includes(num)) score += 12;
         else score += 4;
     });
-    
     if (sum >= 100 && sum <= 170) score += 15;
     if (evens >= 2 && evens <= 4) score += 13;
-    
     const baseProb = Math.floor((score / 100) * 100);
     return Math.min(Math.max(baseProb, 45), 98);
 }
@@ -451,9 +451,7 @@ generateBtn.addEventListener('click', () => {
         alert("ID를 먼저 입력하고 접속해주세요.");
         return;
     }
-    
     generateLottoNumbers();
-    
     if (isFirstGeneration) {
         welcomeMessage.classList.add('hidden');
         resultArea.classList.remove('hidden');
@@ -463,28 +461,22 @@ generateBtn.addEventListener('click', () => {
 
 function generateLottoNumbers() {
     lottoRowsContainer.innerHTML = '';
-    
     for (let row = 0; row < 5; row++) {
         const numbers = new Set();
         while (numbers.size < 6) {
             const randomIndex = Math.floor(Math.random() * weightedPool.length);
             numbers.add(weightedPool[randomIndex]);
         }
-
         const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
         const probability = calculateProbability(sortedNumbers);
         const mathBasis = generateMathBasis(sortedNumbers);
-        
         const rowWrapper = document.createElement('div');
         rowWrapper.classList.add('row-wrapper');
-        
         const rowLabel = document.createElement('span');
         rowLabel.classList.add('row-label');
         rowLabel.textContent = `SET ${String.fromCharCode(65 + row)}`;
-
         const ballsContainer = document.createElement('div');
         ballsContainer.classList.add('balls-container');
-
         sortedNumbers.forEach((number) => {
             const ball = document.createElement('div');
             ball.classList.add('lotto-ball');
@@ -492,32 +484,25 @@ function generateLottoNumbers() {
             ball.style.background = getBallColor(number);
             ballsContainer.appendChild(ball);
         });
-
         const actionGroup = document.createElement('div');
         actionGroup.classList.add('action-group');
-
         const probBadge = document.createElement('div');
         probBadge.classList.add('prob-badge');
         probBadge.innerHTML = `
             <span class="prob-value">${probability}%</span>
             <div class="detail-tooltip">${mathBasis}</div>
         `;
-
         const saveBtn = document.createElement('button');
         saveBtn.classList.add('save-row-btn');
         saveBtn.textContent = '저장';
         saveBtn.onclick = () => saveSetToHistory(sortedNumbers);
-
         actionGroup.appendChild(probBadge);
         actionGroup.appendChild(saveBtn);
-
         rowWrapper.appendChild(rowLabel);
         rowWrapper.appendChild(ballsContainer);
         rowWrapper.appendChild(actionGroup);
-        
         lottoRowsContainer.appendChild(rowWrapper);
     }
 }
 
-// Initial Call
 init();

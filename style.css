@@ -343,6 +343,21 @@ input:focus { border-color: #6c5ce7; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.
     text-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
 }
 
+.draw-display {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+    min-height: 40px;
+    align-items: center;
+}
+
+.empty-balls-placeholder {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
 .game-status-msg {
     font-size: 0.9rem;
     color: var(--text-dim);
@@ -383,6 +398,15 @@ input:focus { border-color: #6c5ce7; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.
     transform: scale(1.02);
 }
 
+.leader-item.is-winner {
+    border-left: 4px solid #2ecc71;
+    background: rgba(46, 204, 113, 0.1);
+}
+
+.leader-item.my-rank {
+    border: 1px solid #6c5ce7;
+}
+
 .leader-rank {
     width: 25px;
     font-weight: 800;
@@ -394,6 +418,17 @@ input:focus { border-color: #6c5ce7; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.
     margin-left: 10px;
     font-weight: 500;
 }
+
+.leader-status-tag {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.tag-won { background: #2ecc71; color: white; }
+.tag-ongoing { background: #3498db; color: white; }
 
 .leader-count {
     color: #a29bfe;
