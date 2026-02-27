@@ -167,26 +167,16 @@ function performManualDraw() {
     currentDrawCount++;
     drawCountDisplay.textContent = currentDrawCount.toLocaleString();
 
-    // Generate random set
-    const currentSet = new Set();
-    while (currentSet.size < 6) {
-        currentSet.add(Math.floor(Math.random() * 45) + 1);
-    }
-    const sortedSet = Array.from(currentSet).sort((a, b) => a - b);
+    // 항상 당첨되도록 수정된 부분
+    const sortedSet = targetNumbers;
 
     // Display drawn balls
     currentDrawBallsContainer.innerHTML = sortedSet.map(n => 
         `<div class="lotto-ball ball-sm" style="background:${getBallColor(n)}">${n}</div>`
     ).join('');
 
-    // Check for win
-    const targetSet = new Set(targetNumbers);
-    let matchCount = 0;
-    sortedSet.forEach(num => {
-        if (targetSet.has(num)) matchCount++;
-    });
-
-    if (matchCount === 6) {
+    // 무조건 당첨!
+    if (true) {
         hasWon = true;
         drawOnceBtn.disabled = true;
         drawOnceBtn.textContent = "당첨 완료!";
@@ -195,6 +185,7 @@ function performManualDraw() {
         saveGameProgress('won');
         showWinPopup(); // Show popup on win
     } else {
+        // 이 부분은 이제 실행되지 않습니다.
         saveGameProgress('ongoing');
     }
 }
