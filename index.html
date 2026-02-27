@@ -13,8 +13,12 @@
             <p class="subtitle">AI 기반 번호 생성 및 분석</p>
             <div class="latest-draw">
                 <span class="draw-label">1210회 당첨번호:</span>
-                <div class="mini-balls">
+                <div class="mini-balls" id="main-target-balls">
                     <!-- JS will fill this -->
+                </div>
+                <span class="draw-label" style="margin-left: 10px;">+ 보너스:</span>
+                <div class="mini-balls" id="bonus-target-ball">
+                     <!-- JS will fill this -->
                 </div>
             </div>
         </header>
@@ -49,11 +53,6 @@
                 <!-- 당첨 게임 섹션 -->
                 <section id="game-tab" class="tab-pane">
                     <div class="game-container">
-                        <div class="target-numbers-box">
-                            <div class="section-title">목표 번호 (1210회)</div>
-                            <div id="target-balls" class="mini-balls"></div>
-                        </div>
-
                         <div class="simulation-area">
                             <div class="section-title">시뮬레이션</div>
                             <div class="counter-display">
@@ -69,9 +68,16 @@
                                 <button id="reset-game-btn" class="secondary-btn">기록 초기화</button>
                             </div>
                         </div>
+                        
+                        <div class="recent-wins-box">
+                            <div class="section-title">최근 당첨 기록</div>
+                            <div id="recent-wins-list">
+                                <p class="empty-msg">아직 당첨 기록이 없습니다.</p>
+                            </div>
+                        </div>
 
                         <div class="leaderboard-box">
-                             <div class="section-title">명예의 전당</div>
+                             <div class="section-title">명예의 전당 (1등)</div>
                              <div id="leaderboard-list"></div>
                         </div>
                     </div>
@@ -119,10 +125,9 @@
         </footer>
     </div>
 
-    <!-- 드라마틱한 연출을 위한 오버레이 -->
+    <!-- 당첨 이펙트용 컨테이너 -->
+    <div id="toast-container"></div>
     <div id="dramatic-overlay" class="dramatic-overlay hidden"></div>
-
-    <!-- 당첨 팝업 -->
     <div id="win-popup" class="win-popup hidden">
         <div class="win-popup-content">
             <span class="win-popup-close">&times;</span>

@@ -12,6 +12,7 @@
     --accent-orange: #ff9500;
     --accent-red: #ff3b30;
     --accent-purple: #5856d6;
+    --accent-yellow: #ffcc00;
 
     --font-family-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -39,29 +40,12 @@ body {
 }
 
 /* --- General Typography & Elements --- */
-header h1 {
-    margin: 0 0 10px 0;
-    font-size: 2.8em;
-    font-weight: 600;
+header h1 { margin: 0 0 10px 0; font-size: 2.8em; font-weight: 600; }
+header .subtitle { margin: 0 0 25px; font-size: 1.2em; color: var(--text-color-secondary); }
+.latest-draw { 
+    display: flex; justify-content: center; align-items: center; gap: 10px; 
+    background: var(--system-gray-5); padding: 12px; border-radius: 12px; margin-bottom: 30px; flex-wrap: wrap;
 }
-
-header .subtitle {
-    margin: 0 0 25px;
-    font-size: 1.2em;
-    color: var(--text-color-secondary);
-}
-
-.latest-draw {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    background: var(--system-gray-5);
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-}
-
 .draw-label { font-weight: 400; color: var(--text-color-secondary); }
 .mini-balls { display: flex; gap: 6px; }
 .mini-ball { 
@@ -73,94 +57,34 @@ header .subtitle {
 .hidden { display: none; }
 
 /* --- User & Tabs --- */
-.user-section {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    max-width: 380px;
-    margin-left: auto;
-    margin-right: auto;
+.user-section { display: flex; gap: 10px; margin-bottom: 10px; max-width: 380px; margin-left: auto; margin-right: auto; }
+.user-section input { 
+    flex-grow: 1; padding: 12px 15px; border: 1px solid var(--system-gray-3); border-radius: 10px; 
+    background: var(--system-gray-5); color: var(--text-color-primary); font-size: 1em; 
 }
-
-.user-section input {
-    flex-grow: 1;
-    padding: 12px 15px;
-    border: 1px solid var(--system-gray-3);
-    border-radius: 10px;
-    background: var(--system-gray-5);
-    color: var(--text-color-primary);
-    font-size: 1em;
-}
-.user-section input:focus { 
-    outline: none; border-color: var(--accent-blue); 
-    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.3);
-}
-
-#login-btn {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 10px;
-    background: var(--accent-blue);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-}
-
+.user-section input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.3); }
+#login-btn { padding: 12px 25px; border: none; border-radius: 10px; background: var(--accent-blue); color: white; font-weight: 600; cursor: pointer; }
 .user-status-message { margin-bottom: 25px; color: var(--text-color-secondary); min-height: 20px; }
-
-.tabs {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin-bottom: 25px;
-    border-bottom: 1px solid var(--system-gray-4);
+.tabs { display: flex; justify-content: center; gap: 25px; margin-bottom: 25px; border-bottom: 1px solid var(--system-gray-4); }
+.tab-btn { 
+    padding: 10px 0; cursor: pointer; border: none; background: transparent; color: var(--text-color-secondary); 
+    font-size: 1.1em; font-weight: 500; position: relative; bottom: -1px; border-bottom: 3px solid transparent; 
 }
-
-.tab-btn {
-    padding: 10px 0;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--text-color-secondary);
-    font-size: 1.1em;
-    font-weight: 500;
-    position: relative;
-    bottom: -1px;
-    border-bottom: 3px solid transparent;
-}
-
-.tab-btn.active {
-    color: var(--text-color-primary);
-    border-bottom-color: var(--accent-blue);
-}
-
+.tab-btn.active { color: var(--text-color-primary); border-bottom-color: var(--accent-blue); }
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
 
 /* --- Universal Elements --- */
-.cta-button {
-    background: var(--accent-blue);
-    color: white;
-    border: none;
-    padding: 16px 35px;
-    font-size: 1.2em;
-    font-weight: 600;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+.cta-button { 
+    background: var(--accent-blue); color: white; border: none; padding: 16px 35px; 
+    font-size: 1.2em; font-weight: 600; border-radius: 12px; cursor: pointer; transition: background-color 0.2s ease; 
 }
 .cta-button:disabled { background: var(--system-gray-3); cursor: not-allowed; }
 .cta-button:not(:disabled):hover { background: #006ae0; }
-
-.secondary-btn {
-    padding: 10px 20px;
-    border: 1px solid var(--system-gray-3);
-    border-radius: 10px;
-    background: var(--system-gray-5);
-    color: var(--text-color-primary);
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+.secondary-btn { 
+    padding: 10px 20px; border: 1px solid var(--system-gray-3); border-radius: 10px; 
+    background: var(--system-gray-5); color: var(--text-color-primary); font-weight: 500; 
+    cursor: pointer; transition: background-color 0.2s ease; 
 }
 .secondary-btn:hover { background-color: var(--system-gray-4); }
 
@@ -168,17 +92,13 @@ header .subtitle {
 .welcome-container { padding: 60px 20px; }
 .welcome-container h2 { font-size: 2em; margin-bottom: 10px; }
 .welcome-container p { font-size: 1.2em; color: var(--text-color-secondary); line-height: 1.6; }
-
 .lotto-rows-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
 .row-wrapper { display: flex; align-items: center; background: var(--system-gray-5); padding: 15px; border-radius: 15px; gap: 15px; }
 .row-label { font-weight: 700; color: var(--accent-orange); width: 60px; }
 .balls-container { display: flex; gap: 8px; flex-grow: 1; }
-.lotto-ball { 
-    width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center;
-    align-items: center; color: white; font-weight: 600; font-size: 1.1em; 
-}
+.lotto-ball { width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: 600; font-size: 1.1em; }
 .ball-sm { width: 36px; height: 36px; font-size: 1em; }
-.action-group { display: flex; align-items: center; gap: 10px; position: relative; }
+.action-group { display: flex; align-items: center; gap: 10px; }
 
 .prob-badge {
     background: var(--system-gray-4);
@@ -187,58 +107,86 @@ header .subtitle {
     border-radius: 20px;
     cursor: help;
     font-weight: 500;
+    position: relative; /* Set context for tooltip */
 }
-.detail-tooltip { /* (rest of the properties are fine) */
+
+.detail-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: var(--system-gray-3);
     color: var(--text-color-primary);
+    padding: 10px;
+    border-radius: 8px;
+    width: 250px;
+    font-size: 0.85em;
+    text-align: left;
+    line-height: 1.5;
+    z-index: 10;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    pointer-events: none; /* Prevents tooltip from blocking hover */
 }
+
+.prob-badge:hover .detail-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.detail-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--system-gray-3) transparent transparent transparent;
+}
+
 .detail-tooltip strong { color: var(--accent-orange); }
 
-.save-row-btn {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 10px;
-    background: var(--accent-blue);
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-}
+.save-row-btn { padding: 8px 15px; border: none; border-radius: 10px; background: var(--accent-blue); color: white; font-weight: 500; cursor: pointer; }
 
 /* --- MyPage & Stats Section --- */
 .mypage-header { padding: 0 0 20px 0; text-align: left; }
 .profile-info h2 { margin: 0 0 5px 0; color: var(--accent-blue); font-size: 1.8em; }
 .profile-info p { margin: 0; color: var(--text-color-secondary); font-size: 1.1em; }
-
 #history-list, #leaderboard-list { display: flex; flex-direction: column; gap: 12px; }
-.history-item, .leader-item {
-    background: var(--system-gray-5);
-    padding: 15px 20px;
-    border-radius: 12px;
-}
+.history-item, .leader-item { background: var(--system-gray-5); padding: 15px 20px; border-radius: 12px; }
 .leader-item.my-rank { box-shadow: 0 0 0 2px var(--accent-orange); }
 .leader-item.is-winner { background: rgba(52, 199, 89, 0.15); }
-
 .history-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .history-date { font-size: 0.9em; color: var(--text-color-secondary); }
 .delete-btn { background: var(--accent-red); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
 .history-balls { display: flex; gap: 8px; }
-
 .empty-msg { padding: 40px 0; color: var(--text-color-secondary); font-size: 1.1em; }
 
 /* --- Game Section --- */
 .game-container { display: grid; grid-template-columns: 1fr; gap: 25px; }
-.target-numbers-box, .simulation-area, .leaderboard-box { background: var(--system-gray-5); padding: 25px; border-radius: 20px; }
+.simulation-area, .leaderboard-box, .recent-wins-box { background: var(--system-gray-5); padding: 25px; border-radius: 20px; }
 .section-title { font-size: 1.4em; font-weight: 600; margin-bottom: 20px; color: var(--text-color-primary); text-align: left;}
-
 .counter-display { margin-bottom: 20px; }
 .counter-label { font-size: 1em; color: var(--text-color-secondary); }
 .counter-number { font-size: 3.5em; font-weight: 700; color: var(--accent-green); line-height: 1.2; }
-
 .draw-display { display: flex; justify-content: center; align-items: center; min-height: 80px; padding: 15px; background: var(--system-gray-6); border-radius: 12px; margin-bottom: 10px; gap: 10px; }
 .empty-balls-placeholder { color: var(--text-color-secondary); }
 .game-status-message { min-height: 20px; margin-bottom: 20px; color: var(--text-color-secondary); font-size: 1.1em;}
 .game-controls { display: flex; justify-content: center; gap: 15px; }
 
+/* Recent Wins */
+#recent-wins-list { display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; padding-right: 10px;}
+.recent-win-item { display: flex; align-items: center; justify-content: space-between; background: var(--system-gray-4); padding: 10px 15px; border-radius: 10px;}
+.win-rank { font-weight: 600; font-size: 1.1em; }
+.win-rank-2 { color: var(--accent-purple); }
+.win-rank-3 { color: var(--accent-orange); }
+.win-rank-4 { color: var(--accent-blue); }
+.win-rank-5 { color: var(--accent-green); }
+.win-details { font-size: 0.9em; color: var(--text-color-secondary); }
+
+/* Leaderboard */
 .leader-item { display: grid; grid-template-columns: 30px 1fr auto auto; align-items: center; gap: 15px; padding: 12px 15px; font-size: 1em; }
 .leader-rank { font-weight: 700; color: var(--accent-orange); font-size: 1.2em; }
 .leader-id { font-weight: 500; }
@@ -253,7 +201,6 @@ header .subtitle {
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
 .stat-card { background: var(--system-gray-5); padding: 20px; border-radius: 15px; }
 .stat-card h3 { font-size: 1.2em; color: var(--text-color-primary); margin-top: 0; margin-bottom: 25px; text-align: left; }
-
 .bar-wrapper { display: flex; align-items: center; margin-bottom: 12px; gap: 10px; font-size: 0.9em; }
 .bar-label { width: 50px; text-align: right; color: var(--text-color-secondary); }
 .bar-track { flex-grow: 1; background: var(--system-gray-4); height: 10px; border-radius: 5px; overflow: hidden; }
@@ -261,9 +208,29 @@ header .subtitle {
 .bar-value { width: 40px; text-align: left; font-family: monospace; color: var(--text-color-secondary); }
 #top-numbers .bar-fill { background: var(--accent-orange); }
 
-/* --- Win Popup & Dramatic Effect --- */
+/* --- Toast Popups (for 2nd-5th Prizes) --- */
+#toast-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+.toast-popup { 
+    width: 280px; background: var(--system-gray-4); border-radius: 12px; padding: 15px; 
+    display: flex; align-items: center; gap: 15px; color: var(--text-color-primary); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-left: 5px solid; 
+    animation: slideIn 0.5s ease, fadeOut 0.5s ease 4s forwards;
+}
+.toast-icon { font-size: 1.8em; }
+.toast-message strong { font-weight: 600; display: block; margin-bottom: 2px;}
+.toast-message span { font-size: 0.9em; color: var(--text-color-secondary); }
+
+.toast-rank-2 { border-color: var(--accent-purple); }
+.toast-rank-3 { border-color: var(--accent-orange); }
+.toast-rank-4 { border-color: var(--accent-blue); }
+.toast-rank-5 { border-color: var(--accent-green); }
+
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
+
+/* --- Win Popup & Dramatic Effect (for 1st Prize) --- */
 body.pre-win-effect .app-container { filter: blur(8px) brightness(0.6); transform: scale(0.98); transition: all 0.5s ease; }
-.dramatic-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; }
+.dramatic-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; }
 .win-popup { 
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5); width: 90%; max-width: 450px; 
     background: var(--system-gray-5); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 1001; 
@@ -281,8 +248,4 @@ body.pre-win-effect .app-container { filter: blur(8px) brightness(0.6); transfor
 .firework { position: absolute; width: 4px; height: 4px; background: var(--accent-orange); border-radius: 50%; opacity: 0; animation: firework-burst 1.5s ease-out forwards; }
 @keyframes firework-burst { 0% { transform: scale(0.1); opacity: 1; } 100% { transform: scale(30); opacity: 0; } }
 
-footer {
-    margin-top: 30px;
-    color: var(--text-color-secondary);
-    font-size: 0.9em;
-}
+footer { margin-top: 30px; color: var(--text-color-secondary); font-size: 0.9em;}
