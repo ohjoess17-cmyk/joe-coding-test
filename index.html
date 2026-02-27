@@ -37,6 +37,7 @@
 
         <nav class="tab-nav">
             <button class="tab-btn active" data-tab="generator">번호 생성</button>
+            <button class="tab-btn" data-tab="game">당첨 게임</button>
             <button class="tab-btn" data-tab="mypage">마이페이지</button>
             <button class="tab-btn" data-tab="stats">분석/통계</button>
             <button class="tab-btn" data-tab="guide">이용 가이드</button>
@@ -60,6 +61,39 @@
                 <div class="button-group">
                     <button id="generate-btn" class="main-btn" disabled>번호 분석 및 생성</button>
                     <a href="https://www.dhlottery.co.kr/main" target="_blank" class="sub-btn">구매하러 가기</a>
+                </div>
+            </section>
+
+            <!-- 당첨 게임 섹션 -->
+            <section id="game-tab" class="tab-pane">
+                <div class="game-container">
+                    <div class="target-numbers-box">
+                        <div class="section-title">목표 당첨 번호 (최근 회차)</div>
+                        <div id="target-balls" class="mini-balls">
+                            <!-- JS로 채워짐 -->
+                        </div>
+                    </div>
+
+                    <div class="simulation-area">
+                        <div class="counter-display">
+                            <span class="counter-label">현재 추첨 횟수</span>
+                            <div id="draw-count" class="counter-number">0</div>
+                        </div>
+                        
+                        <div id="game-status" class="game-status-msg">시뮬레이션을 시작하여 당첨까지 몇 번이 걸리는지 확인해보세요!</div>
+                        
+                        <div class="game-controls">
+                            <button id="start-game-btn" class="main-btn">1등 당첨될 때까지 돌리기</button>
+                            <button id="stop-game-btn" class="sub-btn hidden">중단하기</button>
+                        </div>
+                    </div>
+
+                    <div class="leaderboard-section">
+                        <div class="section-title">🏆 명예의 전당 (최소 추첨 당첨자)</div>
+                        <div id="leaderboard-list" class="leaderboard-list">
+                            <p class="empty-msg">아직 기록이 없습니다.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 

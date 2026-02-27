@@ -13,9 +13,21 @@ const historyList = document.getElementById('history-list');
 const profileId = document.getElementById('profile-id');
 const profileStat = document.getElementById('profile-stat');
 
+// Game Elements
+const targetBallsContainer = document.getElementById('target-balls');
+const drawCountDisplay = document.getElementById('draw-count');
+const gameStatusMsg = document.getElementById('game-status');
+const startGameBtn = document.getElementById('start-game-btn');
+const stopGameBtn = document.getElementById('stop-game-btn');
+const leaderboardList = document.getElementById('leaderboard-list');
+
 let currentUser = null;
 let isFirstGeneration = true;
+let isGaming = false;
+let gameInterval = null;
+let currentDrawCount = 0;
 
+const targetNumbers = [7, 8, 13, 22, 24, 37]; // 1210회 당첨번호
 const frequentNumbers = [43, 34, 12, 27, 17, 13, 19, 6, 33, 15, 7, 30, 3];
 const weightedPool = [];
 
@@ -25,6 +37,18 @@ for (let i = 1; i <= 45; i++) {
         weightedPool.push(i); 
         weightedPool.push(i);
     }
+}
+
+// --- Initialization ---
+function init() {
+    renderTargetBalls();
+    updateLeaderboardUI();
+}
+
+function renderTargetBalls() {
+    targetBallsContainer.innerHTML = targetNumbers.map(n => 
+        `<div class="mini-ball" style="background:${getBallColor(n)}">${n}</div>`
+    ).join('');
 }
 
 // --- User & Tab Logic ---
@@ -39,6 +63,7 @@ function handleLogin() {
     userStatus.textContent = `반갑습니다, ${id}님!`;
     userStatus.style.color = "#2ecc71";
     generateBtn.disabled = false;
+    startGameBtn.disabled = false;
     userIdInput.disabled = true;
     loginBtn.textContent = "로그아웃";
     loginBtn.onclick = handleLogout;
@@ -48,6 +73,7 @@ function handleLogin() {
     
     updateHistoryUI();
     updateStatsUI();
+    updateLeaderboardUI();
 }
 
 function handleLogout() {
@@ -70,8 +96,134 @@ tabBtns.forEach(btn => {
         
         if (target === 'mypage') updateHistoryUI();
         if (target === 'stats') updateStatsUI();
+        if (target === 'game') updateLeaderboardUI();
     });
 });
+
+// --- Game Logic ---
+
+function startSimulation() {
+    if (!currentUser) {
+        alert("로그인 후 이용 가능합니다.");
+        return;
+    }
+
+    isGaming = true;
+    currentDrawCount = 0;
+    drawCountDisplay.textContent = '0';
+    gameStatusMsg.textContent = "시뮬레이션 진행 중... (초고속 모드)";
+    gameStatusMsg.style.color = "#a29bfe";
+    
+    startGameBtn.classList.add('hidden');
+    stopGameBtn.classList.remove('hidden');
+
+    const targetSet = new Set(targetNumbers);
+    
+    function runBatch() {
+        if (!isGaming) return;
+
+        const batchSize = 50000; // 처리 속도를 위해 배치 크게 설정
+        for (let i = 0; i < batchSize; i++) {
+            currentDrawCount++;
+            
+            const currentSet = new Set();
+            while (currentSet.size < 6) {
+                currentSet.add(Math.floor(Math.random() * 45) + 1);
+            }
+
+            // Check for 1st prize
+            let matchCount = 0;
+            currentSet.forEach(num => {
+                if (targetSet.has(num)) matchCount++;
+            });
+
+            if (matchCount === 6) {
+                endSimulation(true);
+                return;
+            }
+        }
+
+        drawCountDisplay.textContent = currentDrawCount.toLocaleString();
+        gameInterval = requestAnimationFrame(runBatch);
+    }
+
+    runBatch();
+}
+
+function stopSimulation() {
+    isGaming = false;
+    cancelAnimationFrame(gameInterval);
+    gameStatusMsg.textContent = "시뮬레이션이 중단되었습니다.";
+    gameStatusMsg.style.color = "var(--text-dim)";
+    startGameBtn.classList.remove('hidden');
+    stopGameBtn.classList.add('hidden');
+}
+
+function endSimulation(isWin) {
+    isGaming = false;
+    cancelAnimationFrame(gameInterval);
+    
+    if (isWin) {
+        drawCountDisplay.textContent = currentDrawCount.toLocaleString();
+        gameStatusMsg.textContent = `축하합니다! 1등 당첨! 총 ${currentDrawCount.toLocaleString()}번 만에 성공하셨습니다.`;
+        gameStatusMsg.style.color = "#2ecc71";
+        saveGameResult(currentDrawCount);
+    }
+    
+    startGameBtn.classList.remove('hidden');
+    stopGameBtn.classList.add('hidden');
+    startGameBtn.textContent = "다시 도전하기";
+}
+
+function saveGameResult(count) {
+    const leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard') || '[]');
+    
+    // Find if user already has a record
+    const existingIndex = leaderboard.findIndex(item => item.id === currentUser);
+    
+    if (existingIndex !== -1) {
+        // Update if new record is better (lower count)
+        if (count < leaderboard[existingIndex].count) {
+            leaderboard[existingIndex].count = count;
+            leaderboard[existingIndex].date = new Date().toLocaleDateString();
+        }
+    } else {
+        leaderboard.push({
+            id: currentUser,
+            count: count,
+            date: new Date().toLocaleDateString()
+        });
+    }
+
+    // Sort by count ascending
+    leaderboard.sort((a, b) => a.count - b.count);
+    
+    // Keep top 10
+    const top10 = leaderboard.slice(0, 10);
+    localStorage.setItem('lotto_leaderboard', JSON.stringify(top10));
+    
+    updateLeaderboardUI();
+}
+
+function updateLeaderboardUI() {
+    const leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard') || '[]');
+    
+    if (leaderboard.length === 0) {
+        leaderboardList.innerHTML = '<p class="empty-msg">아직 기록이 없습니다. 첫 번째 1등 당첨자가 되어보세요!</p>';
+        return;
+    }
+
+    leaderboardList.innerHTML = leaderboard.map((item, index) => `
+        <div class="leader-item ${item.id === currentUser ? 'my-rank' : ''}">
+            <span class="leader-rank">${index + 1}</span>
+            <span class="leader-id">${item.id}</span>
+            <span class="leader-count">${item.count.toLocaleString()}회</span>
+        </div>
+    `).join('');
+}
+
+startGameBtn.addEventListener('click', startSimulation);
+stopGameBtn.addEventListener('click', stopSimulation);
 
 // --- Core Logic ---
 
@@ -366,3 +518,6 @@ function generateLottoNumbers() {
         lottoRowsContainer.appendChild(rowWrapper);
     }
 }
+
+// Initial Call
+init();

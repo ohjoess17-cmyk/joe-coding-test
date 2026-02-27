@@ -1,12 +1,15 @@
 {
   "mcpServers": {
-    "firebase": {
+    "obsidian": {
       "command": "npx",
       "args": [
         "-y",
-        "firebase-tools@latest",
-        "experimental:mcp"
-      ]
+        "obsidian-mcp-server"
+      ],
+      "env": {
+        "OBSIDIAN_API_KEY": "d737fd27de1eb8e37e2d7b3554326d1cfd8fd15edc0dd808e43a18da81bf61eb",
+        "OBSIDIAN_URL": "https://overfierce-nonopprobriously-emelia.ngrok-free.dev"
+      }
     }
   }
 }
