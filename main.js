@@ -22,6 +22,13 @@ const drawOnceBtn = document.getElementById('draw-once-btn');
 const resetGameBtn = document.getElementById('reset-game-btn');
 const leaderboardList = document.getElementById('leaderboard-list');
 
+// Win Popup Elements
+const winPopup = document.getElementById('win-popup');
+const winPopupClose = document.querySelector('.win-popup-close');
+const winPopupCloseBtn = document.getElementById('win-popup-close-btn');
+const fireworksContainer = document.querySelector('.fireworks');
+
+
 let currentUser = null;
 let isFirstGeneration = true;
 let currentDrawCount = 0;
@@ -105,6 +112,24 @@ tabBtns.forEach(btn => {
 
 // --- Game Logic ---
 
+function showWinPopup() {
+    winPopup.classList.remove('hidden');
+    fireworksContainer.innerHTML = '';
+    for (let i = 0; i < 30; i++) {
+        const firework = document.createElement('div');
+        firework.classList.add('firework');
+        firework.style.top = `${Math.random() * 100}%`;
+        firework.style.left = `${Math.random() * 100}%`;
+        firework.style.animationDelay = `${Math.random() * 2}s`;
+        fireworksContainer.appendChild(firework);
+    }
+}
+
+function hideWinPopup() {
+    winPopup.classList.add('hidden');
+    fireworksContainer.innerHTML = '';
+}
+
 function loadUserGameProgress() {
     const leaderboard = JSON.parse(localStorage.getItem('lotto_leaderboard_v2') || '[]');
     const userRecord = leaderboard.find(item => item.id === currentUser);
@@ -168,6 +193,7 @@ function performManualDraw() {
         gameStatusMsg.textContent = `🎉 축하합니다! ${currentDrawCount.toLocaleString()}번 만에 1등 당첨!`;
         gameStatusMsg.style.color = "#2ecc71";
         saveGameProgress('won');
+        showWinPopup(); // Show popup on win
     } else {
         saveGameProgress('ongoing');
     }
@@ -185,7 +211,6 @@ function saveGameProgress(status) {
     };
 
     if (existingIndex !== -1) {
-        // If they already won, don't downgrade to ongoing
         if (leaderboard[existingIndex].status === 'won' && status === 'ongoing') {
             // Do nothing
         } else {
@@ -195,12 +220,11 @@ function saveGameProgress(status) {
         leaderboard.push(record);
     }
 
-    // Sorting logic: Winners first (by count asc), then ongoing
     leaderboard.sort((a, b) => {
         if (a.status === 'won' && b.status !== 'won') return -1;
         if (a.status !== 'won' && b.status === 'won') return 1;
         if (a.status === 'won' && b.status === 'won') return a.count - b.count;
-        return b.count - a.count; // Ongoing: higher count might be seen as more effort/progress
+        return b.count - a.count;
     });
 
     localStorage.setItem('lotto_leaderboard_v2', JSON.stringify(leaderboard));
@@ -244,6 +268,9 @@ function updateLeaderboardUI() {
 
 drawOnceBtn.addEventListener('click', performManualDraw);
 resetGameBtn.addEventListener('click', resetUserGame);
+winPopupClose.addEventListener('click', hideWinPopup);
+winPopupCloseBtn.addEventListener('click', hideWinPopup);
+
 
 // --- Core Logic ---
 
